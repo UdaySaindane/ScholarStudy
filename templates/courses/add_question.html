@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Question to {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Add Question</h4>
+                    <small>Quiz: {{ quiz.title }}</small>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Question Text *</strong></label>
+                            {{ form.question_text }}
+                            {% if form.question_text.errors %}
+                                <div class="text-danger">{{ form.question_text.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Option A *</strong></label>
+                            {{ form.option_a }}
+                            {% if form.option_a.errors %}
+                                <div class="text-danger">{{ form.option_a.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Option B *</strong></label>
+                            {{ form.option_b }}
+                            {% if form.option_b.errors %}
+                                <div class="text-danger">{{ form.option_b.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Option C *</strong></label>
+                            {{ form.option_c }}
+                            {% if form.option_c.errors %}
+                                <div class="text-danger">{{ form.option_c.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Option D *</strong></label>
+                            {{ form.option_d }}
+                            {% if form.option_d.errors %}
+                                <div class="text-danger">{{ form.option_d.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>Correct Answer *</strong></label>
+                                {{ form.correct_answer }}
+                                {% if form.correct_answer.errors %}
+                                    <div class="text-danger">{{ form.correct_answer.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label"><strong>Points *</strong></label>
+                                {{ form.points }}
+                                {% if form.points.errors %}
+                                    <div class="text-danger">{{ form.points.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-3 mb-3">
+                                <label class="form-label"><strong>Order *</strong></label>
+                                {{ form.order }}
+                                {% if form.order.errors %}
+                                    <div class="text-danger">{{ form.order.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-lightbulb"></i> 
+                            <strong>Tip:</strong> Make sure to select the correct answer from the dropdown!
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'courses:manage_quiz' quiz.id %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-check-circle"></i> Add Question
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

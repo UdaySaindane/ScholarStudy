@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Lesson{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-pencil"></i> Edit Lesson</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Lesson Title *</strong></label>
+                            {{ form.title }}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>Content Type *</strong></label>
+                                {{ form.content_type }}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>Lesson Order *</strong></label>
+                                {{ form.order }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Upload File</strong></label>
+                            {% if lesson.file_upload %}
+                                <p class="text-muted small">Current file: {{ lesson.file_upload.name }}</p>
+                            {% endif %}
+                            {{ form.file_upload }}
+                            <small class="text-muted">Leave empty to keep current file</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Text Content</strong></label>
+                            {{ form.text_content }}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>Duration (minutes)</strong></label>
+                                {{ form.duration_minutes }}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check mt-4">
+                                    {{ form.is_preview }}
+                                    <label class="form-check-label">
+                                        Allow preview
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'courses:manage_course' lesson.course.id %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

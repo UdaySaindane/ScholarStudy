@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="mb-4">Complete Your Enrollment</h2>
+            
+            <div class="row">
+                <!-- Order Summary -->
+                <div class="col-md-7">
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">Course Details</h5>
+                        </div>
+                        <div class="card-body">
+                            {% if course.thumbnail %}
+                            <img src="{{ course.thumbnail.url }}" class="img-fluid rounded mb-3" alt="{{ course.title }}">
+                            {% endif %}
+                            
+                            <h5>{{ course.title }}</h5>
+                            <p class="text-muted">{{ course.description|truncatewords:30 }}</p>
+                            
+                            <hr>
+                            
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Course Price:</span>
+                                <strong>${{ course.price }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Tax:</span>
+                                <strong>$0.00</strong>
+                            </div>
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <h5>Total:</h5>
+                                <h5 class="text-primary">${{ course.price }}</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mock Payment Form -->
+                <div class="col-md-5">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Payment Details</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="alert alert-info">
+                                <small>
+                                    <i class="bi bi-info-circle"></i> 
+                                    This is a demo payment. No real transaction will occur.
+                                </small>
+                            </div>
+                            
+                            <form method="post">
+                                {% csrf_token %}
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Cardholder Name</label>
+                                    <input type="text" class="form-control" value="{{ user.get_full_name|default:user.username }}" readonly>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Card Number</label>
+                                    <input type="text" class="form-control" value="4242 4242 4242 4242" readonly>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">Expiry Date</label>
+                                        <input type="text" class="form-control" value="12/25" readonly>
+                                    </div>
+                                    <div class="col-6 mb-3">
+                                        <label class="form-label">CVV</label>
+                                        <input type="text" class="form-control" value="123" readonly>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-success btn-lg w-100">
+                                    <i class="bi bi-lock"></i> Complete Enrollment - ${{ course.price }}
+                                </button>
+                            </form>
+                            
+                            <div class="text-center mt-3">
+                                <small class="text-muted">
+                                    <i class="bi bi-shield-check"></i> Secure mock payment processing
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <a href="{% url 'courses:course_detail' course.slug %}" class="btn btn-outline-secondary w-100">
+                            <i class="bi bi-arrow-left"></i> Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

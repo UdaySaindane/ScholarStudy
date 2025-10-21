@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ quiz.title }} - Take Quiz{% endblock %}
+
+{% block extra_css %}
+<style>
+    .quiz-timer {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        z-index: 1000;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">{{ quiz.title }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <p class="mb-2"><strong>Instructions:</strong></p>
+                        <ul class="mb-0">
+                            <li>Total Questions: {{ questions.count }}</li>
+                            <li>Passing Score: {{ quiz.passing_score }}%</li>
+                            {% if quiz.time_limit_minutes > 0 %}
+                            <li>Time Limit: {{ quiz.time_limit_minutes }} minutes</li>
+                            {% else %}
+                            <li>No time limit</li>
+                            {% endif %}
+                            <li>Attempt Number: {{ attempt_number }}</li>
+                        </ul>
+                    </div>
+                    
+                    <form method="post" action="{% url 'quizzes:quiz_submit' enrollment.id quiz.id %}" id="quizForm">
+                        {% csrf_token %}
+                        
+                        {% for question in questions %}
+                        <div class="mb-4 p-3 border rounded">
+                            <h6 class="mb-3">{{ forloop.counter }}. {{ question.question_text }}</h6>
+                            
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="question_{{ question.id }}" 
+                                       id="q{{ question.id }}_a" value="A" required>
+                                <label class="form-check-label" for="q{{ question.id }}_a">
+                                    A) {{ question.option_a }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="question_{{ question.id }}" 
+                                       id="q{{ question.id }}_b" value="B">
+                                <label class="form-check-label" for="q{{ question.id }}_b">
+                                    B) {{ question.option_b }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="question_{{ question.id }}" 
+                                       id="q{{ question.id }}_c" value="C">
+                                <label class="form-check-label" for="q{{ question.id }}_c">
+                                    C) {{ question.option_c }}
+                                </label>
+                            </div>
+                            
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="question_{{ question.id }}" 
+                                       id="q{{ question.id }}_d" value="D">
+                                <label class="form-check-label" for="q{{ question.id }}_d">
+                                    D) {{ question.option_d }}
+                                </label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'enrollments:course_player' enrollment.id %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> Submit Quiz
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Timer (if time limit exists) -->
+{% if quiz.time_limit_minutes > 0 %}
+<div class="quiz-timer" id="quizTimer">
+    <h5 class="mb-2">Time Remaining</h5>
+    <h3 class="text-danger mb-0" id="timerDisplay">{{ quiz.time_limit_minutes }}:00</h3>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block extra_js %}
+{% if quiz.time_limit_minutes > 0 %}
+<script>
+    // Quiz Timer
+    let timeLimit = {{ quiz.time_limit_minutes }} * 60; // Convert to seconds
+    let timerInterval;
+    
+    function updateTimer() {
+        let minutes = Math.floor(timeLimit / 60);
+        let seconds = timeLimit % 60;
+        
+        document.getElementById('timerDisplay').textContent = 
+            `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (timeLimit <= 0) {
+            clearInterval(timerInterval);
+            alert('Time is up! Quiz will be submitted automatically.');
+            document.getElementById('quizForm').submit();
+        }
+        
+        if (timeLimit <= 60) {
+            document.getElementById('timerDisplay').classList.add('text-danger');
+        }
+        
+        timeLimit--;
+    }
+    
+    timerInterval = setInterval(updateTimer, 1000);
+    updateTimer();
+</script>
+{% endif %}
+{% endblock %}

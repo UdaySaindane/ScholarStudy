@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Apply to Become Instructor{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-mortarboard"></i> Apply to Become an Instructor
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h6><i class="bi bi-info-circle"></i> Why Become an Instructor?</h6>
+                        <ul class="mb-0">
+                            <li>Share your knowledge with students worldwide</li>
+                            <li>Build your professional reputation</li>
+                            <li>Create and manage your own courses</li>
+                            <li>Track student progress and engagement</li>
+                            <li>Earn recognition in your field</li>
+                        </ul>
+                    </div>
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="{{ form.instructor_bio.id_for_label }}" class="form-label">
+                                <strong>{{ form.instructor_bio.label }}</strong>
+                            </label>
+                            {{ form.instructor_bio }}
+                            {% if form.instructor_bio.errors %}
+                                <div class="text-danger mt-1">
+                                    {% for error in form.instructor_bio.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                            <small class="text-muted d-block mt-1">
+                                {{ form.instructor_bio.help_text }}
+                            </small>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i> 
+                            <strong>Review Process:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>Your application will be reviewed by an administrator</li>
+                                <li>This process typically takes 1-3 business days</li>
+                                <li>You'll receive a notification once approved</li>
+                                <li>Make sure your information is detailed and accurate</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-send"></i> Submit Application
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Tips Section -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5><i class="bi bi-lightbulb"></i> Application Tips</h5>
+                    <ul class="mb-0">
+                        <li>Describe your teaching experience and qualifications</li>
+                        <li>Mention your area of expertise</li>
+                        <li>Explain what courses you plan to create</li>
+                        <li>Include relevant certifications or degrees</li>
+                        <li>Be clear about why you want to teach on our platform</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

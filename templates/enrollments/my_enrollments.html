@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block title %}My Learning - Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4"><i class="bi bi-journal-bookmark"></i> My Learning Dashboard</h2>
+    
+    {% if enrollments %}
+    <div class="row g-4">
+        {% for enrollment in enrollments %}
+        <div class="col-md-6">
+            <div class="card shadow-sm dashboard-card">
+                <div class="card-body">
+                    <!-- Course Header -->
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title">{{ enrollment.course.title }}</h5>
+                        {% if enrollment.is_completed %}
+                        <span class="badge bg-success">Completed</span>
+                        {% else %}
+                        <span class="badge bg-primary">In Progress</span>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Course Description -->
+                    <p class="card-text text-muted mb-3">{{ enrollment.course.description|truncatewords:15 }}</p>
+                    
+                    <!-- Progress Bar -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <small>Progress</small>
+                            <small class="fw-bold">{{ enrollment.progress_percent }}%</small>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: {{ enrollment.progress_percent }}%"
+                                 aria-valuenow="{{ enrollment.progress_percent }}" 
+                                 aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats -->
+                    <div class="row text-center mb-3">
+                        <div class="col-6">
+                            <div class="p-2 bg-light rounded">
+                                <h6 class="mb-0">
+                                    {{ enrollment.completed_lessons }}/{{ enrollment.total_lessons }}
+                                </h6>
+                                <small class="text-muted">Lessons</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-2 bg-light rounded">
+                                <h6 class="mb-0">
+                                    {% if enrollment.course.quizzes.count > 0 %}
+                                        {{ enrollment.passed_quizzes|default:0 }}/{{ enrollment.course.quizzes.count }}
+                                    {% else %}
+                                        0/0
+                                    {% endif %}
+                                </h6>
+                                <small class="text-muted">Quizzes Passed</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Latest Quiz Attempt -->
+                    {% if enrollment.latest_attempt %}
+                    <div class="alert alert-info mb-3">
+                        <small>
+                            <i class="bi bi-info-circle"></i> Latest Quiz: 
+                            <strong>{{ enrollment.latest_attempt.score }}/{{ enrollment.latest_attempt.total_questions }}</strong> 
+                            ({{ enrollment.latest_attempt.percentage|floatformat:0 }}%)
+                            {% if enrollment.latest_attempt.passed %}
+                                <span class="badge bg-success">Passed</span>
+                            {% else %}
+                                <span class="badge bg-danger">Failed</span>
+                            {% endif %}
+                        </small>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Actions -->
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'enrollments:course_player' enrollment.id %}" class="btn btn-primary">
+                            <i class="bi bi-play-circle"></i> Continue Learning
+                        </a>
+                        <a href="{% url 'quizzes:quiz_history' enrollment.id %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-clock-history"></i> Quiz History
+                        </a>
+                    </div>
+                    
+                    <small class="text-muted d-block mt-3">
+                        <i class="bi bi-calendar"></i> Enrolled: {{ enrollment.enrolled_date|date:"M d, Y" }}
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">
+        <i class="bi bi-info-circle"></i> You haven't enrolled in any courses yet. 
+        <a href="{% url 'courses:course_list' %}" class="alert-link">Browse courses</a> to get started!
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% comment %} {% extends 'base.html' %}
+
+{% block title %}My Learning - Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4"><i class="bi bi-journal-bookmark"></i> My Learning Dashboard</h2>
+    
+    {% if enrollments %}
+    <div class="row g-4">
+        {% for enrollment in enrollments %}
+        <div class="col-md-6">
+            <div class="card shadow-sm dashboard-card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <h5 class="card-title">{{ enrollment.course.title }}</h5>
+                        {% if enrollment.is_completed %}
+                        <span class="badge bg-success">Completed</span>
+                        {% else %}
+                        <span class="badge bg-primary">In Progress</span>
+                        {% endif %}
+                    </div>
+                    
+                    <p class="card-text text-muted mb-3">{{ enrollment.course.description|truncatewords:15 }}</p>
+                    
+                    <!-- Progress Bar -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <small>Progress</small>
+                            <small class="fw-bold">{{ enrollment.progress_percentage|floatformat:0 }}%</small>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: {{ enrollment.progress_percentage }}%"
+                                 aria-valuenow="{{ enrollment.progress_percentage }}" 
+                                 aria-valuemin="0" aria-valuemax="100">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats -->
+                    <div class="row text-center mb-3">
+                        <div class="col-6">
+                            <div class="p-2 bg-light rounded">
+                                <h6 class="mb-0">{{ enrollment.lesson_progress.filter(is_completed=True).count }}/{{ enrollment.course.lessons.count }}</h6>
+                                <small class="text-muted">Lessons</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="p-2 bg-light rounded">
+                                <h6 class="mb-0">{{ enrollment.quiz_attempts.filter(passed=True).values('quiz').distinct.count }}/{{ enrollment.course.quizzes.count }}</h6>
+                                <small class="text-muted">Quizzes Passed</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quiz Scores -->
+                    {% with latest_attempt=enrollment.quiz_attempts.first %}
+                    {% if latest_attempt %}
+                    <div class="alert alert-info mb-3">
+                        <small>
+                            <i class="bi bi-info-circle"></i> Latest Quiz: 
+                            <strong>{{ latest_attempt.score }}/{{ latest_attempt.total_questions }}</strong> 
+                            ({{ latest_attempt.percentage|floatformat:0 }}%)
+                            {% if latest_attempt.passed %}
+                                <span class="badge bg-success">Passed</span>
+                            {% else %}
+                                <span class="badge bg-danger">Failed</span>
+                            {% endif %}
+                        </small>
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                    
+                    <!-- Actions -->
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'enrollments:course_player' enrollment.id %}" class="btn btn-primary">
+                            <i class="bi bi-play-circle"></i> Continue Learning
+                        </a>
+                        <a href="{% url 'quizzes:quiz_history' enrollment.id %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-clock-history"></i> Quiz History
+                        </a>
+                    </div>
+                    
+                    <small class="text-muted d-block mt-3">
+                        <i class="bi bi-calendar"></i> Enrolled: {{ enrollment.enrolled_date|date:"M d, Y" }}
+                    </small>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-info text-center">
+        <i class="bi bi-info-circle"></i> You haven't enrolled in any courses yet. 
+        <a href="{% url 'courses:course_list' %}" class="alert-link">Browse courses</a> to get started!
+    </div>
+    {% endif %}
+</div>
+{% endblock %} {% endcomment %}

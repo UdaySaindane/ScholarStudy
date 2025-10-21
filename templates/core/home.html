@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home - E-Learning Platform{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container text-center">
+        <h1>Learn Anything, Anytime, Anywhere</h1>
+        <p class="lead">Unlock your potential with thousands of online courses</p>
+        <a href="{% url 'courses:course_list' %}" class="btn btn-light btn-lg">Explore Courses</a>
+        {% if not user.is_authenticated %}
+        <a href="{% url 'accounts:register' %}" class="btn btn-outline-light btn-lg ms-2">Sign Up Free</a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="container mb-5">
+    <h2 class="text-center mb-4">Browse by Category</h2>
+    <div class="row g-4">
+        {% for category in categories %}
+        <div class="col-md-4">
+            <a href="{% url 'courses:course_list' %}?category={{ category.slug }}" class="text-decoration-none">
+                <div class="category-card shadow-sm">
+                    <div class="category-icon">
+                        <i class="bi bi-{{ category.icon|default:'book' }}"></i>
+                    </div>
+                    <h4>{{ category.name }}</h4>
+                    <p class="text-muted">{{ category.courses.count }} courses</p>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Featured Courses Section -->
+<section class="container mb-5">
+    <h2 class="text-center mb-4">Featured Courses</h2>
+    <div class="row g-4">
+        {% for course in featured_courses %}
+        <div class="col-md-4">
+            <div class="card course-card shadow-sm">
+                {% if course.thumbnail %}
+                <img src="{{ course.thumbnail.url }}" class="card-img-top" alt="{{ course.title }}">
+                {% else %}
+                <img src="https://via.placeholder.com/400x200?text={{ course.title }}" class="card-img-top" alt="{{ course.title }}">
+                {% endif %}
+                <div class="card-body">
+                    <span class="badge bg-primary mb-2">{{ course.category.name }}</span>
+                    <h5 class="card-title">{{ course.title }}</h5>
+                    <p class="card-text text-muted">{{ course.description|truncatewords:15 }}</p>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="rating">
+                            {% with avg_rating=course.get_average_rating %}
+                            {% if avg_rating > 0 %}
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= avg_rating %}
+                                        <i class="bi bi-star-fill"></i>
+                                    {% else %}
+                                        <i class="bi bi-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                                <span class="text-muted">({{ course.get_review_count }})</span>
+                            {% else %}
+                                <span class="text-muted">No reviews yet</span>
+                            {% endif %}
+                            {% endwith %}
+                        </div>
+                        <small class="text-muted">
+                            <i class="bi bi-people"></i> {{ course.get_student_count }} students
+                        </small>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        {% if course.is_free %}
+                        <span class="course-price free">FREE</span>
+                        {% else %}
+                        <span class="course-price">${{ course.price }}</span>
+                        {% endif %}
+                        <a href="{% url 'courses:course_detail' course.slug %}" class="btn btn-outline-primary">View Course</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center">
+            <p class="text-muted">No courses available yet. Check back soon!</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+    {% if featured_courses %}
+    <div class="text-center mt-4">
+        <a href="{% url 'courses:course_list' %}" class="btn btn-primary btn-lg">View All Courses</a>
+    </div>
+    {% endif %}
+</section>
+
+<!-- Stats Section -->
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <h2 class="text-primary">1000+</h2>
+                <p>Students</p>
+            </div>
+            <div class="col-md-3">
+                <h2 class="text-primary">50+</h2>
+                <p>Courses</p>
+            </div>
+            <div class="col-md-3">
+                <h2 class="text-primary">20+</h2>
+                <p>Instructors</p>
+            </div>
+            <div class="col-md-3">
+                <h2 class="text-primary">95%</h2>
+                <p>Success Rate</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

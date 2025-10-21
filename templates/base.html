@@ -1,0 +1,742 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}E-Learning Platform{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'core:home' %}">
+                <i class="bi bi-mortarboard-fill"></i> ScholarStudy
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'courses:course_list' %}">Courses</a>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                        {% if user.profile.instructor_status == 'approved' %}
+                            {% if user.profile.role == 'instructor' %}
+                                <!-- Instructor Mode -->
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'courses:my_courses' %}">
+                                        <i class="bi bi-book"></i> My Courses
+                                    </a>
+                                </li>
+                            {% else %}
+                                <!-- Student Mode (but approved instructor) -->
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url 'enrollments:my_enrollments' %}">
+                                        <i class="bi bi-journal-bookmark"></i> My Learning
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% else %}
+                            <!-- Regular Student -->
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'enrollments:my_enrollments' %}">
+                                    <i class="bi bi-journal-bookmark"></i> My Learning
+                                </a>
+                            </li>
+                        {% endif %}
+
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) -->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) -->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) down is 4 -->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) -->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) -->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) -->
+
+{% comment %} {% if user.is_superuser %}
+<li class="nav-item dropdown">
+    {# Check if there is at least one unread notification #}
+    {% with has_unread=False %}
+        {% for n in user.notifications.all %}
+            {% if not n.is_read %}
+                {% with has_unread=True %}{% endwith %}
+            {% endif %}
+        {% endfor %}
+
+        {# Bell icon with red if there is an unread notification #}
+        <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown">
+            <i class="bi bi-bell{% if has_unread %}-fill text-danger{% endif %}" style="font-size: 1.2rem;"></i>
+            {% if has_unread %}
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                New
+            </span>
+            {% endif %}
+        </a>
+
+        {# Latest 5 notifications #}
+        <ul class="dropdown-menu dropdown-menu-end" style="min-width: 350px; max-height: 400px; overflow-y: auto;">
+            <li class="dropdown-header d-flex justify-content-between align-items-center">
+                <span><strong>Notifications</strong></span>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+
+            {% with latest_notifications=user.notifications.all|slice:":5" %}
+                {% if latest_notifications %}
+                    {% for notification in latest_notifications %}
+                    <li>
+                        <a class="dropdown-item {% if not notification.is_read %}bg-light{% endif %}" 
+                           href="{{ notification.action_url }}">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-person-fill-add text-primary" style="font-size: 1.5rem;"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <p class="mb-1 small"><strong>{{ notification.title }}</strong></p>
+                                    <p class="mb-1 small text-muted">{{ notification.message|truncatewords:10 }}</p>
+                                    <p class="mb-0 small text-muted">
+                                        <i class="bi bi-clock"></i> {{ notification.created_at|timesince }} ago
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    {% endfor %}
+                {% else %}
+                    <li><span class="dropdown-item-text text-muted small">No notifications</span></li>
+                {% endif %}
+            {% endwith %}
+
+            <li>
+                <a class="dropdown-item text-center text-primary" href="{% url 'notifications:notification_list' %}">
+                    <strong>View All Notifications</strong>
+                </a>
+            </li>
+        </ul>
+
+    {% endwith %}
+</li>
+{% endif %} {% endcomment %}
+
+
+
+
+
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) down 3 new 4 up-->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) -->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) -->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) -->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) -->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) -->
+
+<!-- NOTIFICATION BELL ICON (ADMIN ONLY) - FIXED VERSION -->
+{% comment %} {% if user.is_superuser %}
+<li class="nav-item dropdown">
+    {# Count ONLY unread notifications #}
+    {% with unread_notifications=user.notifications.filter(is_read=False) %}
+        {% with unread_count=unread_notifications.count %}
+            <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-bell{% if unread_count > 0 %}-fill text-danger{% endif %}" style="font-size: 1.2rem;"></i>
+                {% if unread_count > 0 %}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{ unread_count }}
+                </span>
+                {% endif %}
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end" style="min-width: 350px; max-height: 400px; overflow-y: auto;">
+                <li class="dropdown-header d-flex justify-content-between align-items-center">
+                    <span><strong>Notifications</strong></span>
+                    {% if unread_count > 0 %}
+                    <span class="badge bg-danger">{{ unread_count }} new</span>
+                    {% endif %}
+                </li>
+                <li><hr class="dropdown-divider"></li>
+
+                {# Show latest 5 UNREAD notifications first, then recent read ones #}
+                {% with latest_notifications=user.notifications.all|slice:":5" %}
+                    {% if latest_notifications %}
+                        {% for notification in latest_notifications %}
+                        <li>
+                            <a class="dropdown-item {% if not notification.is_read %}bg-light{% endif %}" 
+                               href="{{ notification.action_url }}">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-person-fill-add text-primary" style="font-size: 1.5rem;"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <p class="mb-1 small"><strong>{{ notification.title }}</strong></p>
+                                        <p class="mb-1 small text-muted">{{ notification.message|truncatewords:10 }}</p>
+                                        <p class="mb-0 small text-muted">
+                                            <i class="bi bi-clock"></i> {{ notification.created_at|timesince }} ago
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        {% endfor %}
+                    {% else %}
+                        <li><span class="dropdown-item-text text-muted small">No notifications</span></li>
+                    {% endif %}
+                {% endwith %}
+
+                <li>
+                    <a class="dropdown-item text-center text-primary" href="{% url 'notifications:notification_list' %}">
+                        <strong>View All Notifications</strong>
+                    </a>
+                </li>
+            </ul>
+        {% endwith %}
+    {% endwith %}
+</li>
+{% endif %} {% endcomment %}
+
+
+
+             <!-- NOTIFICATION BELL ICON (ADMIN ONLY) 2 down , new 3 up -->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) 2-->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) 2-->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY)2-->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) 2-->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) 2-->
+
+ {% if user.is_superuser %}
+<li class="nav-item dropdown">
+    {# Count unread notifications #}
+    {% with unread_notifications=user.notifications.all %}
+        {% with unread_count=unread_notifications|length %}
+            <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-bell{% if unread_count > 0 %}-fill text-danger{% endif %}" style="font-size: 1.2rem;"></i>
+                {% if unread_count > 0 %}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{ unread_count }}
+                </span>
+                {% endif %}
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end" style="min-width: 350px; max-height: 400px; overflow-y: auto;">
+                <li class="dropdown-header d-flex justify-content-between align-items-center">
+                    <span><strong>Notifications</strong></span>
+                    {% if unread_count > 0 %}
+                    <span class="badge bg-danger">{{ unread_count }} new</span>
+                    {% endif %}
+                </li>
+                <li><hr class="dropdown-divider"></li>
+
+                {% with latest_notifications=unread_notifications|slice:":5" %}
+                    {% if latest_notifications %}
+                        {% for notification in latest_notifications %}
+                        <li>
+                            <a class="dropdown-item {% if not notification.is_read %}bg-light{% endif %}" 
+                               href="{{ notification.action_url }}">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-person-fill-add text-primary" style="font-size: 1.5rem;"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <p class="mb-1 small"><strong>{{ notification.title }}</strong></p>
+                                        <p class="mb-1 small text-muted">{{ notification.message|truncatewords:10 }}</p>
+                                        <p class="mb-0 small text-muted">
+                                            <i class="bi bi-clock"></i> {{ notification.created_at|timesince }} ago
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        {% endfor %}
+                    {% else %}
+                        <li><span class="dropdown-item-text text-muted small">No notifications</span></li>
+                    {% endif %}
+                {% endwith %}
+
+                <li>
+                    <a class="dropdown-item text-center text-primary" href="{% url 'notifications:notification_list' %}">
+                        <strong>View All Notifications</strong>
+                    </a>
+                </li>
+            </ul>
+        {% endwith %}
+    {% endwith %}
+</li>
+{% endif %} 
+
+
+
+            <!-- 140 and 194 NOTIFICATION BELL ICON (ADMIN ONLY) UP -->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) UP-->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) UP-->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) UP-->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) UP-->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) UP-->
+<!-- NOTIFICATION BELL ICON (ADMIN ONLY) - FIXED VERSION -->
+{% comment %} {% if user.is_superuser %}
+<li class="nav-item dropdown">
+    {# Count ONLY unread notifications #}
+    {% with unread_notifications=user.notifications.filter(is_read=False) %}
+        {% with unread_count=unread_notifications.count %}
+            <a class="nav-link position-relative" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown">
+                <i class="bi bi-bell{% if unread_count > 0 %}-fill text-danger{% endif %}" style="font-size: 1.2rem;"></i>
+                {% if unread_count > 0 %}
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    {{ unread_count }}
+                </span>
+                {% endif %}
+            </a>
+
+            <ul class="dropdown-menu dropdown-menu-end" style="min-width: 350px; max-height: 400px; overflow-y: auto;">
+                <li class="dropdown-header d-flex justify-content-between align-items-center">
+                    <span><strong>Notifications</strong></span>
+                    {% if unread_count > 0 %}
+                    <span class="badge bg-danger">{{ unread_count }} new</span>
+                    {% endif %}
+                </li>
+                <li><hr class="dropdown-divider"></li>
+
+                {# Show latest 5 UNREAD notifications first, then recent read ones #}
+                {% with latest_notifications=user.notifications.all|slice:":5" %}
+                    {% if latest_notifications %}
+                        {% for notification in latest_notifications %}
+                        <li>
+                            <a class="dropdown-item {% if not notification.is_read %}bg-light{% endif %}" 
+                               href="{{ notification.action_url }}">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="bi bi-person-fill-add text-primary" style="font-size: 1.5rem;"></i>
+                                    </div>
+                                    <div class="flex-grow-1 ms-3">
+                                        <p class="mb-1 small"><strong>{{ notification.title }}</strong></p>
+                                        <p class="mb-1 small text-muted">{{ notification.message|truncatewords:10 }}</p>
+                                        <p class="mb-0 small text-muted">
+                                            <i class="bi bi-clock"></i> {{ notification.created_at|timesince }} ago
+                                        </p>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        {% endfor %}
+                    {% else %}
+                        <li><span class="dropdown-item-text text-muted small">No notifications</span></li>
+                    {% endif %}
+                {% endwith %}
+
+                <li>
+                    <a class="dropdown-item text-center text-primary" href="{% url 'notifications:notification_list' %}">
+                        <strong>View All Notifications</strong>
+                    </a>
+                </li>
+            </ul>
+        {% endwith %}
+    {% endwith %}
+</li>
+{% endif %} {% endcomment %}
+
+                        <!-- 140 and 194 NOTIFICATION BELL ICON (ADMIN ONLY) UP -->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) -->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) -->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY)-->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY) -->
+            <!-- NOTIFICATION BELL ICON (ADMIN ONLY)-->
+
+
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="post" action="{% url 'accounts:logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-primary ms-2" href="{% url 'accounts:register' %}">Sign Up</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark mt-5">
+        <div class="container">
+            <div class="row py-4">
+                <div class="col-md-4">
+                    <h5><i class="bi bi-mortarboard-fill"></i> LearnHub</h5>
+                    <p>Your gateway to quality online education. Learn at your own pace, anywhere, anytime.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'core:home' %}">Home</a></li>
+                        <li><a href="{% url 'courses:course_list' %}">Courses</a></li>
+                        <li><a href="{% url 'core:about' %}">About</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact</h5>
+                    <p>
+                        <i class="bi bi-envelope"></i> info@learnhub.com<br>
+                        <i class="bi bi-phone"></i> +1 234 567 8900
+                    </p>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center pb-3">
+                <p class="mb-0">&copy; 2025 LearnHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+{% comment %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}E-Learning Platform{% endblock %}</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'core:home' %}">
+                <i class="bi bi-mortarboard-fill"></i> LearnHub
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'courses:course_list' %}">Courses</a>
+                    </li>
+
+                    {% if user.is_authenticated %}
+                        {% if user.profile.role == 'instructor' %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'courses:my_courses' %}">My Courses</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'enrollments:my_enrollments' %}">My Learning</a>
+                            </li>
+                        {% endif %}
+
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="post" action="{% url 'accounts:logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-primary ms-2" href="{% url 'accounts:register' %}">Sign Up</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark mt-5">
+        <div class="container">
+            <div class="row py-4">
+                <div class="col-md-4">
+                    <h5><i class="bi bi-mortarboard-fill"></i> LearnHub</h5>
+                    <p>Your gateway to quality online education. Learn at your own pace, anywhere, anytime.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'core:home' %}">Home</a></li>
+                        <li><a href="{% url 'courses:course_list' %}">Courses</a></li>
+                        <li><a href="{% url 'core:about' %}">About</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact</h5>
+                    <p>
+                        <i class="bi bi-envelope"></i> info@learnhub.com<br>
+                        <i class="bi bi-phone"></i> +1 234 567 8900
+                    </p>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center pb-3">
+                <p class="mb-0">&copy; 2025 LearnHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+
+ {% endcomment %}
+
+{% comment %} ////////////////////////////////// {% endcomment %}
+ {% comment %} ////////////////up 2////////////////// {% endcomment %}
+
+ {% comment %} ////////////////////////////////// {% endcomment %}
+
+ {% comment %} ////////////////////////////////// {% endcomment %}
+
+ {% comment %} ////////////////////////////////// {% endcomment %}
+
+ {% comment %} ////////////////////////////////// {% endcomment %}
+
+ {% comment %} ////////////////////////////////// {% endcomment %}
+
+ {% comment %} /////////////////////down 1 ///////////// {% endcomment %}
+
+ {% comment %} ////////////////////////////////// {% endcomment %}
+
+ {% comment %} ////////////////////////////////// {% endcomment %}
+{% comment %} ////////////////////////////////// {% endcomment %}
+
+{% comment %} ////////////////////////////////// {% endcomment %}
+
+{% comment %} ////////////////////////////////// {% endcomment %}
+
+
+
+
+
+{% comment %} {% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}E-Learning Platform{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+
+    <!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Bootstrap 5 JS Bundle (with Popper) -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'core:home' %}">
+                <i class="bi bi-mortarboard-fill"></i> LearnHub
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'core:home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'courses:course_list' %}">Courses</a>
+                    </li>
+                    
+                    {% if user.is_authenticated %}
+                        {% if user.profile.role == 'instructor' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'courses:my_courses' %}">My Courses</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'enrollments:my_enrollments' %}">My Learning</a>
+                        </li>
+                        {% endif %}
+                        
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle"></i> {{ user.username }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{% url 'accounts:profile' %}">Profile</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a></li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-primary ms-2" href="{% url 'accounts:register' %}">Sign Up</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5><i class="bi bi-mortarboard-fill"></i> LearnHub</h5>
+                    <p>Your gateway to quality online education. Learn at your own pace, anywhere, anytime.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="{% url 'core:home' %}">Home</a></li>
+                        <li><a href="{% url 'courses:course_list' %}">Courses</a></li>
+                        <li><a href="{% url 'core:about' %}">About</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Contact</h5>
+                    <p>
+                        <i class="bi bi-envelope"></i> info@learnhub.com<br>
+                        <i class="bi bi-phone"></i> +1 234 567 8900
+                    </p>
+                </div>
+            </div>
+            <hr class="bg-light">
+            <div class="text-center">
+                <p class="mb-0">&copy; 2025 LearnHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html> {% endcomment %}

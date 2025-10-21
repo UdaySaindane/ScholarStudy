@@ -1,0 +1,152 @@
+/* Home Page Custom Styles */
+
+
+/* Hero Section */
+
+.hero-section {
+    text-align: center;
+    padding: 100px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.hero-section h1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.hero-section p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.hero-section .btn {
+    margin-top: 10px;
+}
+
+
+/* Category Cards */
+
+.category-card {
+    padding: 30px;
+    border-radius: 10px;
+    background: white;
+    transition: all 0.3s ease;
+    text-align: center;
+    cursor: pointer;
+}
+
+.category-card:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-5px);
+}
+
+.category-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+
+/* Course Cards */
+
+.course-card img {
+    height: 200px;
+    object-fit: cover;
+    width: 100%;
+}
+
+.course-card .card-body {
+    padding: 20px;
+}
+
+.course-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.rating i {
+    color: #ffc107;
+}
+
+
+/* Stats Section */
+
+.bg-light h2 {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+
+/* Media Queries for Responsiveness */
+
+
+/* Large Tablets */
+
+@media (max-width: 992px) {
+    .hero-section h1 {
+        font-size: 2.5rem;
+    }
+    .hero-section p {
+        font-size: 1.1rem;
+    }
+    .course-card img {
+        height: 180px;
+    }
+    .category-card {
+        padding: 25px;
+    }
+}
+
+
+/* Tablets / Small Desktops */
+
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 80px 15px;
+    }
+    .hero-section h1 {
+        font-size: 2rem;
+    }
+    .hero-section p {
+        font-size: 1rem;
+    }
+    .category-card {
+        padding: 20px;
+    }
+    .course-card img {
+        height: 160px;
+    }
+}
+
+
+/* Mobile Devices */
+
+@media (max-width: 576px) {
+    .hero-section {
+        padding: 60px 10px;
+    }
+    .hero-section h1 {
+        font-size: 1.6rem;
+    }
+    .hero-section p {
+        font-size: 0.9rem;
+    }
+    .category-card {
+        padding: 15px;
+    }
+    .course-card img {
+        height: 140px;
+    }
+    .course-card .card-body {
+        padding: 10px;
+    }
+    .btn-lg {
+        font-size: 0.9rem;
+        padding: 8px 20px;
+    }
+    .row.g-4>[class*='col-'] {
+        margin-bottom: 20px;
+    }
+}

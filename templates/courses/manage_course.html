@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Course Header -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h2>{{ course.title }}</h2>
+                    <p class="text-muted mb-0">{{ course.description|truncatewords:20 }}</p>
+                </div>
+                <div class="text-end">
+                    {% if course.status == 'published' %}
+                    <span class="badge bg-success mb-2">Published</span>
+                    {% else %}
+                    <span class="badge bg-warning mb-2">Draft</span>
+                    {% endif %}
+                    <br>
+                    <a href="{% url 'courses:edit_course' course.id %}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-pencil"></i> Edit Course
+                    </a>
+                </div>
+            </div>
+            
+            <div class="row mt-3">
+                <div class="col-md-3">
+                    <small class="text-muted">Students</small>
+                    <h4>{{ course.get_student_count }}</h4>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-muted">Lessons</small>
+                    <h4>{{ lessons.count }}</h4>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-muted">Quizzes</small>
+                    <h4>{{ quizzes.count }}</h4>
+                </div>
+                <div class="col-md-3">
+                    <small class="text-muted">Rating</small>
+                    <h4>{{ course.get_average_rating|floatformat:1 }} ⭐</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Lessons Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-play-circle"></i> Lessons</h5>
+                <a href="{% url 'courses:add_lesson' course.id %}" class="btn btn-sm btn-primary">
+                    <i class="bi bi-plus"></i> Add Lesson
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if lessons %}
+            <div class="list-group">
+                {% for lesson in lessons %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">{{ lesson.order }}. {{ lesson.title }}</h6>
+                        <small class="text-muted">
+                            <span class="badge bg-secondary">{{ lesson.get_content_type_display }}</span>
+                            {% if lesson.is_preview %}
+                            <span class="badge bg-success">Preview</span>
+                            {% endif %}
+                        </small>
+                    </div>
+                    <div>
+                        <a href="{% url 'courses:edit_lesson' lesson.id %}" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i>
+                        </a>
+                        <a href="{% url 'courses:delete_lesson' lesson.id %}" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted text-center mb-0">No lessons yet. Add your first lesson!</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Quizzes Section -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-header bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-question-circle"></i> Quizzes</h5>
+                <a href="{% url 'courses:add_quiz' course.id %}" class="btn btn-sm btn-primary">
+                    <i class="bi bi-plus"></i> Add Quiz
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            {% if quizzes %}
+            <div class="list-group">
+                {% for quiz in quizzes %}
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">{{ quiz.title }}</h6>
+                        <small class="text-muted">
+                            {{ quiz.get_question_count }} questions | 
+                            Passing: {{ quiz.passing_score }}% |
+                            {% if quiz.time_limit_minutes > 0 %}
+                                Time: {{ quiz.time_limit_minutes }} min
+                            {% else %}
+                                No time limit
+                            {% endif %}
+                        </small>
+                    </div>
+                    <div>
+                        <a href="{% url 'courses:manage_quiz' quiz.id %}" class="btn btn-sm btn-primary">
+                            <i class="bi bi-gear"></i> Manage
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-muted text-center mb-0">No quizzes yet. Add a quiz to test students!</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Actions -->
+    <div class="text-center">
+        <a href="{% url 'courses:my_courses' %}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to My Courses
+        </a>
+        <a href="{% url 'courses:course_detail' course.slug %}" class="btn btn-outline-primary" target="_blank">
+            <i class="bi bi-eye"></i> Preview Course
+        </a>
+    </div>
+</div>
+{% endblock %}

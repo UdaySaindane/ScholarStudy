@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-pencil"></i> Edit Course</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Course Title *</strong></label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Description *</strong></label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger">{{ form.description.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>Category *</strong></label>
+                                {{ form.category }}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>Level *</strong></label>
+                                {{ form.level }}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Course Thumbnail</strong></label>
+                            {% if course.thumbnail %}
+                                <div class="mb-2">
+                                    <img src="{{ course.thumbnail.url }}" alt="Current thumbnail" class="img-thumbnail" style="max-height: 150px;">
+                                    <p class="text-muted small">Current thumbnail</p>
+                                </div>
+                            {% endif %}
+                            {{ form.thumbnail }}
+                            <small class="text-muted">Leave empty to keep current thumbnail</small>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>Price ($)</strong></label>
+                                {{ form.price }}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check mt-4">
+                                    {{ form.is_free }}
+                                    <label class="form-check-label">
+                                        Make this course free
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Prerequisites</strong></label>
+                            {{ form.prerequisites }}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Status *</strong></label>
+                            {{ form.status }}
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'courses:manage_course' course.id %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Back
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-save"></i> Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

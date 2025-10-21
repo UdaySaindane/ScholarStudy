@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Quiz History - {{ enrollment.course.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">
+        <i class="bi bi-clock-history"></i> Quiz History
+    </h2>
+    <h5 class="text-muted mb-4">{{ enrollment.course.title }}</h5>
+    
+    {% if attempts %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Quiz</th>
+                            <th>Attempt</th>
+                            <th>Score</th>
+                            <th>Percentage</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            {% comment %} <th>Action</th> {% endcomment %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attempt in attempts %}
+                        <tr>
+                            <td>{{ attempt.quiz.title }}</td>
+                            <td>Attempt #{{ attempt.attempt_number }}</td>
+                            <td>{{ attempt.score }}/{{ attempt.total_questions }}</td>
+                            <td>
+                                <strong class="{% if attempt.passed %}text-success{% else %}text-danger{% endif %}">
+                                    {{ attempt.percentage|floatformat:0 }}%
+                                </strong>
+                            </td>
+                            <td>
+                                {% if attempt.passed %}
+                                <span class="badge bg-success">Passed</span>
+                                {% else %}
+                                <span class="badge bg-danger">Failed</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ attempt.started_at|date:"M d, Y H:i" }}</td>
+                            {% comment %} <td>
+                                <!-- Link to a quiz attempt view; update the URL name to your actual view -->
+                                <a href="{% url 'quizzes:quiz_attempt_detail' attempt.id %}" class="btn btn-sm btn-outline-primary">
+                                    View
+                                </a>
+                            </td> {% endcomment %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        You have not attempted any quizzes yet.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% comment %} {% extends 'base.html' %}
+
+{% block title %}Quiz History - {{ enrollment.course.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">
+        <i class="bi bi-clock-history"></i> Quiz History
+    </h2>
+    <h5 class="text-muted mb-4">{{ enrollment.course.title }}</h5>
+    
+    {% if attempts %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Quiz</th>
+                            <th>Attempt</th>
+                            <th>Score</th>
+                            <th>Percentage</th>
+                            <th>Status</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for attempt in attempts %}
+                        <tr>
+                            <td>{{ attempt.quiz.title }}</td>
+                            <td>Attempt #{{ attempt.attempt_number }}</td>
+                            <td>{{ attempt.score }}/{{ attempt.total_questions }}</td>
+                            <td>
+                                <strong class="{% if attempt.passed %}text-success{% else %}text-danger{% endif %}">
+                                    {{ attempt.percentage|floatformat:0 }}%
+                                </strong>
+                            </td>
+                            <td>
+                                {% if attempt.passed %}
+                                <span class="badge bg-success">Passed</span>
+                                {% else %}
+                                <span class="badge bg-danger">Failed</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ attempt.started_at|date:"M d, Y H:i" }} {% endcomment %}

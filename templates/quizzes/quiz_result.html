@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Quiz Results - {{ attempt.quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Result Card -->
+            <div class="card shadow mb-4">
+                <div class="card-header {% if attempt.passed %}bg-success{% else %}bg-danger{% endif %} text-white text-center">
+                    <h3 class="mb-0">
+                        {% if attempt.passed %}
+                        <i class="bi bi-check-circle-fill"></i> Congratulations!
+                        {% else %}
+                        <i class="bi bi-x-circle-fill"></i> Keep Trying!
+                        {% endif %}
+                    </h3>
+                </div>
+                <div class="card-body text-center">
+                    <h1 class="display-1 {% if attempt.passed %}text-success{% else %}text-danger{% endif %}">
+                        {{ attempt.percentage|floatformat:0 }}%
+                    </h1>
+                    <h4 class="mb-4">Your Score: {{ attempt.score }}/{{ attempt.total_questions }}</h4>
+                    
+                    {% if attempt.passed %}
+                    <div class="alert alert-success">
+                        <i class="bi bi-trophy"></i> You passed! Great job!
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <i class="bi bi-info-circle"></i> Passing score is {{ attempt.quiz.passing_score }}%. 
+                        {% if can_retake %}You can retake the quiz.{% endif %}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <h5>Correct Answers</h5>
+                                <h2 class="text-success">{{ attempt.score }}</h2>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 bg-light rounded">
+                                <h5>Wrong Answers</h5>
+                                <h2 class="text-danger">{{ attempt.total_questions|add:"-"|add:attempt.score }}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Answer Review -->
+            <div class="card shadow mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-list-check"></i> Answer Review</h5>
+                </div>
+                <div class="card-body">
+                    {% for result in results %}
+                    <div class="mb-4 p-3 border rounded {% if result.is_correct %}border-success bg-light{% else %}border-danger{% endif %}">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h6>{{ forloop.counter }}. {{ result.question.question_text }}</h6>
+                            {% if result.is_correct %}
+                            <span class="badge bg-success">Correct</span>
+                            {% else %}
+                            <span class="badge bg-danger">Wrong</span>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="ms-3">
+                            <p class="mb-1">
+                                <strong>Your Answer:</strong> 
+                                <span class="{% if result.is_correct %}text-success{% else %}text-danger{% endif %}">
+                                    {{ result.student_answer }}) 
+                                    {% if result.student_answer == 'A' %}{{ result.question.option_a }}
+                                    {% elif result.student_answer == 'B' %}{{ result.question.option_b }}
+                                    {% elif result.student_answer == 'C' %}{{ result.question.option_c }}
+                                    {% elif result.student_answer == 'D' %}{{ result.question.option_d }}
+                                    {% endif %}
+                                </span>
+                            </p>
+                            
+                            {% if not result.is_correct %}
+                            <p class="mb-0">
+                                <strong>Correct Answer:</strong> 
+                                <span class="text-success">
+                                    {{ result.question.correct_answer }}) 
+                                    {% if result.question.correct_answer == 'A' %}{{ result.question.option_a }}
+                                    {% elif result.question.correct_answer == 'B' %}{{ result.question.option_b }}
+                                    {% elif result.question.correct_answer == 'C' %}{{ result.question.option_c }}
+                                    {% elif result.question.correct_answer == 'D' %}{{ result.question.option_d }}
+                                    {% endif %}
+                                </span>
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'enrollments:course_player' attempt.enrollment.id %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Back to Course
+                </a>
+                {% if can_retake and not attempt.passed %}
+                <a href="{% url 'quizzes:quiz_start' attempt.enrollment.id attempt.quiz.id %}" class="btn btn-warning">
+                    <i class="bi bi-arrow-clockwise"></i> Retake Quiz
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

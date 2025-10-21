@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ course.title }} - LearnHub{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-md-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'core:home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'courses:course_list' %}">Courses</a></li>
+                    <li class="breadcrumb-item active">{{ course.title }}</li>
+                </ol>
+            </nav>
+            
+            <h1>{{ course.title }}</h1>
+            <p class="lead text-muted">{{ course.description }}</p>
+            
+            <div class="mb-4">
+                <span class="badge bg-primary me-2">{{ course.category.name }}</span>
+                <span class="badge bg-secondary">{{ course.get_level_display }}</span>
+            </div>
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <small class="text-muted">
+                        <i class="bi bi-person"></i> Instructor: <strong>{{ course.instructor.username }}</strong>
+                    </small>
+                </div>
+                <div class="col-md-6">
+                    <small class="text-muted">
+                        <i class="bi bi-people"></i> <strong>{{ course.get_student_count }}</strong> students enrolled
+                    </small>
+                </div>
+            </div>
+            
+            {% if course.thumbnail %}
+            <img src="{{ course.thumbnail.url }}" class="img-fluid rounded mb-4" alt="{{ course.title }}">
+            {% endif %}
+            
+            <!-- Course Content -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-list-ul"></i> Course Content</h5>
+                </div>
+                <div class="card-body">
+                    <h6>Lessons ({{ lessons.count }})</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for lesson in lessons %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-play-circle"></i> {{ lesson.title }}
+                                {% if lesson.is_preview %}
+                                <span class="badge bg-success ms-2">Preview</span>
+                                {% endif %}
+                            </div>
+                            <span class="badge bg-secondary">{{ lesson.get_content_type_display }}</span>
+                        </li>
+                        {% empty %}
+                        <li class="list-group-item text-muted">No lessons available yet.</li>
+                        {% endfor %}
+                    </ul>
+                    
+                    {% if quizzes %}
+                    <h6 class="mt-4">Quizzes ({{ quizzes.count }})</h6>
+                    <ul class="list-group list-group-flush">
+                        {% for quiz in quizzes %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <i class="bi bi-question-circle"></i> {{ quiz.title }}
+                            </div>
+                            <span class="badge bg-info">{{ quiz.get_question_count }} questions</span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Prerequisites -->
+            {% if course.prerequisites %}
+            <div class="card shadow-sm mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-check-circle"></i> Prerequisites</h5>
+                </div>
+                <div class="card-body">
+                    {{ course.prerequisites|linebreaks }}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Reviews -->
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="bi bi-star"></i> Student Reviews</h5>
+                </div>
+                <div class="card-body">
+                    {% if reviews %}
+                        {% for review in reviews %}
+                        <div class="mb-3 pb-3 border-bottom">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <strong>{{ review.student.username }}</strong>
+                                    <div class="rating">
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= review.rating %}
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                            {% else %}
+                                                <i class="bi bi-star text-warning"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>
+                            </div>
+                            <p class="mt-2 mb-0">{{ review.comment }}</p>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No reviews yet. Be the first to review!</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sidebar -->
+        <div class="col-md-4">
+            <div class="card shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-body text-center">
+                    {% if course.is_free %}
+                    <h2 class="course-price free mb-3">FREE</h2>
+                    {% else %}
+                    <h2 class="course-price mb-3">${{ course.price }}</h2>
+                    {% endif %}
+                    
+                    {% if user.is_authenticated %}
+                        {% if is_enrolled %}
+                            <a href="{% url 'enrollments:my_enrollments' %}" class="btn btn-success btn-lg w-100 mb-3">
+                                <i class="bi bi-check-circle"></i> Enrolled - Go to Course
+                            </a>
+                        {% else %}
+                            <a href="{% url 'enrollments:enroll_course' course.id %}" class="btn btn-primary btn-lg w-100 mb-3">
+                                <i class="bi bi-cart-plus"></i> Enroll Now
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="btn btn-primary btn-lg w-100 mb-3">
+                            <i class="bi bi-box-arrow-in-right"></i> Login to Enroll
+                        </a>
+                    {% endif %}
+                    
+                    <h6 class="mt-4 mb-3">This course includes:</h6>
+                    <ul class="list-unstyled text-start">
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success"></i> {{ lessons.count }} lessons</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success"></i> {{ quizzes.count }} quizzes</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success"></i> Lifetime access</li>
+                        <li class="mb-2"><i class="bi bi-check-circle-fill text-success"></i> Learn at your own pace</li>
+                    </ul>
+                    
+                    {% with avg_rating=course.get_average_rating %}
+                    {% if avg_rating > 0 %}
+                    <div class="mt-4">
+                        <div class="rating mb-2">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= avg_rating %}
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                {% else %}
+                                    <i class="bi bi-star text-warning"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <p class="mb-0">
+                            <strong>{{ avg_rating|floatformat:1 }}</strong> 
+                            ({{ course.get_review_count }} reviews)
+                        </p>
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

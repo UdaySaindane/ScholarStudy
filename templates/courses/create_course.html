@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Course{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-plus-circle"></i> Create New Course</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Course Title *</strong></label>
+                            {{ form.title }}
+                            {% if form.title.errors %}
+                                <div class="text-danger">{{ form.title.errors }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Description *</strong></label>
+                            {{ form.description }}
+                            {% if form.description.errors %}
+                                <div class="text-danger">{{ form.description.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted">Describe what students will learn</small>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>Category *</strong></label>
+                                {{ form.category }}
+                                {% if form.category.errors %}
+                                    <div class="text-danger">{{ form.category.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>Level *</strong></label>
+                                {{ form.level }}
+                                {% if form.level.errors %}
+                                    <div class="text-danger">{{ form.level.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Course Thumbnail</strong></label>
+                            {{ form.thumbnail }}
+                            {% if form.thumbnail.errors %}
+                                <div class="text-danger">{{ form.thumbnail.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted">Upload an attractive course image</small>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>Price ($)</strong></label>
+                                {{ form.price }}
+                                {% if form.price.errors %}
+                                    <div class="text-danger">{{ form.price.errors }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label"><strong>Pricing</strong></label>
+                                <div class="form-check mt-2">
+                                    {{ form.is_free }}
+                                    <label class="form-check-label">
+                                        Make this course free
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Prerequisites</strong></label>
+                            {{ form.prerequisites }}
+                            {% if form.prerequisites.errors %}
+                                <div class="text-danger">{{ form.prerequisites.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted">What should students know before taking this course?</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Status *</strong></label>
+                            {{ form.status }}
+                            {% if form.status.errors %}
+                                <div class="text-danger">{{ form.status.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted">Draft courses are not visible to students</small>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'courses:my_courses' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> Create Course
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

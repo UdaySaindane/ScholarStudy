@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Successful{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow text-center">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem;"></i>
+                    </div>
+                    
+                    <h2 class="text-success mb-3">Payment Successful!</h2>
+                    <p class="lead mb-4">You are now enrolled in the course</p>
+                    
+                    <div class="card bg-light mb-4">
+                        <div class="card-body">
+                            <h5>{{ payment.course.title }}</h5>
+                            <p class="text-muted mb-2">{{ payment.course.description|truncatewords:20 }}</p>
+                            <hr>
+                            <div class="d-flex justify-content-between">
+                                <span>Amount Paid:</span>
+                                <strong class="text-success">${{ payment.amount }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Transaction ID:</span>
+                                <strong>{{ payment.transaction_id }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Date:</span>
+                                <strong>{{ payment.created_at|date:"M d, Y H:i" }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> A confirmation email has been sent to your email address.
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'enrollments:course_player' enrollment.id %}" class="btn btn-primary btn-lg">
+                            <i class="bi bi-play-circle"></i> Start Learning Now
+                        </a>
+                        <a href="{% url 'enrollments:my_enrollments' %}" class="btn btn-outline-secondary">
+                            <i class="bi bi-journal-bookmark"></i> Go to My Courses
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

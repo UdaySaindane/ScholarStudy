@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload Quiz CSV - {{ quiz.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0"><i class="bi bi-upload"></i> Upload Quiz Questions</h4>
+                    <small>Quiz: {{ quiz.title }}</small>
+                </div>
+                <div class="card-body">
+                    <!-- CSV Format Instructions -->
+                    <div class="alert alert-info">
+                        <h6><i class="bi bi-info-circle"></i> CSV/Excel Format Required:</h6>
+                        <p class="mb-2">Your file must have these columns (first row as headers):</p>
+                        <ul class="mb-0">
+                            <li><strong>question_text</strong> - The question</li>
+                            <li><strong>option_a</strong> - First option</li>
+                            <li><strong>option_b</strong> - Second option</li>
+                            <li><strong>option_c</strong> - Third option</li>
+                            <li><strong>option_d</strong> - Fourth option</li>
+                            <li><strong>correct_answer</strong> - A, B, C, or D</li>
+                            <li><strong>points</strong> - Points for this question (optional, default 1)</li>
+                            <li><strong>order</strong> - Question order (optional, auto-numbered)</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- Sample CSV -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">Sample CSV Format:</h6>
+                        </div>
+                        <div class="card-body">
+                            <pre class="bg-light p-3 mb-0" style="overflow-x: auto;"><code>question_text,option_a,option_b,option_c,option_d,correct_answer,points
+What is Django?,Framework,Language,Database,Server,A,1
+Python is?,Compiled,Interpreted,Hybrid,None,B,1
+What is MVC?,Pattern,Language,Database,Framework,A,1</code></pre>
+                        </div>
+                    </div>
+                    
+                    <!-- Upload Form -->
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label"><strong>Select CSV/Excel File *</strong></label>
+                            {{ form.csv_file }}
+                            {% if form.csv_file.errors %}
+                                <div class="text-danger">{{ form.csv_file.errors }}</div>
+                            {% endif %}
+                            <small class="text-muted d-block mt-1">
+                                {{ form.csv_file.help_text }}
+                            </small>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle"></i> 
+                            <strong>Important:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>File must be .csv or .xlsx format</li>
+                                <li>First row must be column headers</li>
+                                <li>Correct answer must be A, B, C, or D (uppercase)</li>
+                                <li>All questions will be added to the quiz</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'courses:manage_quiz' quiz.id %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left"></i> Cancel
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-upload"></i> Upload Questions
+                            </button>
+                        </div>
+                    </form>
+                    
+                    <!-- Download Sample -->
+                    <div class="text-center mt-4">
+                        <p class="text-muted">Need a template?</p>
+                        <a href="data:text/csv;charset=utf-8,question_text,option_a,option_b,option_c,option_d,correct_answer,points%0AWhat is Django?,Framework,Language,Database,Server,A,1%0APython is?,Compiled,Interpreted,Hybrid,None,B,1" 
+                           download="quiz_template.csv" 
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-download"></i> Download Sample CSV
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
